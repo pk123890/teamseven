@@ -1,7 +1,7 @@
 package com.training.teamseven.service.impl;
 
 import com.training.teamseven.entity.Employee;
-import com.training.teamseven.service.JsonParser;
+import com.training.teamseven.service.JsonService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Date;
 
 @Service
-public class JsonParserImpl implements JsonParser {
+public class JsonServiceImpl implements JsonService {
     private static final String Topic="kafka_example";
 
     @Autowired
@@ -51,6 +51,7 @@ public class JsonParserImpl implements JsonParser {
             employee.setExperience(Long.valueOf((Long) object.get("experience")).doubleValue());
             Date date = new Date((String) object.get("dateOfBirth"));
             employee.setDateOfBirth(date);
+            System.out.println("Json");
             kafkaTemplate.send(Topic,employee.toString());
             System.out.println(counter + " Counter");
             counter++;

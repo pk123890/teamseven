@@ -1,7 +1,7 @@
 package com.training.teamseven.service.impl;
 
 import com.training.teamseven.entity.Employee;
-import com.training.teamseven.service.CsvParser;
+import com.training.teamseven.service.CsvService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
-public class CsvParserImpl implements CsvParser {
+public class CsvServiceImpl implements CsvService {
     private static final String Topic = "kafka_example";
 
     @Autowired
@@ -34,6 +34,7 @@ public class CsvParserImpl implements CsvParser {
                 double exp = new Double(c[3]);
                 Date date = new SimpleDateFormat("dd/MM/yyyy").parse(c[2]);
                 Employee employee = new Employee(c[0], c[1], date, exp);
+                System.out.println("CSV");
                 kafkaTemplate.send(Topic,employee.toString());
 
             }
