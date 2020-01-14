@@ -1,5 +1,7 @@
 package com.training.teamseven.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.training.teamseven.controller.dto.EmployeeDTO;
 import com.training.teamseven.entity.Employee;
 import com.training.teamseven.service.XmlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +38,15 @@ public class XmlServiceImpl implements XmlService {
                 System.out.println("\nNode Name :" + node.getNodeName());
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) node;
-                    Employee employee=new Employee();
+                    EmployeeDTO employee=new EmployeeDTO();
                     Date date1=new SimpleDateFormat("dd/MM/yyyy").parse((eElement.getElementsByTagName("dateOfBirth").item(0).getTextContent()));
                     employee.setDateOfBirth(date1);
                     employee.setExperience(Double.parseDouble(eElement.getElementsByTagName("experience").item(0).getTextContent()));
                     employee.setFirstName(eElement.getElementsByTagName("firstName").item(0).getTextContent());
                     employee.setLastName(eElement.getElementsByTagName("lastName").item(0).getTextContent());
                     System.out.println("XML");
-                    kafkaTemplate.send(Topic,employee.toString());
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    kafkaTemplate.send(Topic,objectMapper.writeValueAsString(employee));
 
                 }
             }

@@ -1,5 +1,6 @@
 package com.training.teamseven.service.threads;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.training.teamseven.service.JsonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,11 @@ public class JsonThread extends  Thread{
 
     @Override
     public void run() {
-        jsonService.jsonParser();
+        try {
+            jsonService.jsonParser();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public Thread returnThread(){

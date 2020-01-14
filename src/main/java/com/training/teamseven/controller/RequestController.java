@@ -22,9 +22,13 @@ public class RequestController {
 
     @GetMapping("/file")
     public String execute() {
-        jsonThread.start();
-        xmlThread.start();
-        csvThread.start();
+       // Thread ti = jsonThread.returnThread();
+
+        jsonThread.run();
+        xmlThread.run();
+        csvThread.run();
+
+
 
 //        try {
 //            jsonThread.returnThread().join();

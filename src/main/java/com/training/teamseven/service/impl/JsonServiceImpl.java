@@ -1,5 +1,8 @@
 package com.training.teamseven.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.training.teamseven.controller.dto.EmployeeDTO;
 import com.training.teamseven.entity.Employee;
 import com.training.teamseven.service.JsonService;
 import org.json.simple.JSONArray;
@@ -22,7 +25,7 @@ public class JsonServiceImpl implements JsonService {
     @Autowired
     private KafkaTemplate<String,String> kafkaTemplate;
     @Override
-    public void jsonParser() {
+    public void jsonParser() throws JsonProcessingException {
         JSONParser jsonParser = new JSONParser();
         FileReader reader = null;
         Object obj = null;
@@ -41,10 +44,11 @@ public class JsonServiceImpl implements JsonService {
         }
 
         JSONArray jsonArray = (JSONArray) obj;
-        Employee employee = null;
+        EmployeeDTO employee = null;
+        ObjectMapper objectMapper = new ObjectMapper();
         int counter = 0;
         for (Object ob : jsonArray) {
-            employee = new Employee();
+            employee = new EmployeeDTO();
             JSONObject object = (JSONObject) ob;
             employee.setFirstName((String) object.get("firstName"));
             employee.setLastName((String) object.get("lastName"));
@@ -52,7 +56,8 @@ public class JsonServiceImpl implements JsonService {
             Date date = new Date((String) object.get("dateOfBirth"));
             employee.setDateOfBirth(date);
             System.out.println("Json");
-            kafkaTemplate.send(Topic,employee.toString());
+
+            kafkaTemplate.send(Topic,objectMapper.writeValueAsString(employee));
             System.out.println(counter + " Counter");
             counter++;
         }

@@ -1,7 +1,10 @@
 package com.training.teamseven.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.training.teamseven.controller.dto.EmployeeDTO;
 import com.training.teamseven.entity.Employee;
 import com.training.teamseven.service.CsvService;
+import com.training.teamseven.service.consumer.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -33,9 +36,10 @@ public class CsvServiceImpl implements CsvService {
                 String[] c = line.split(cvsSplitBy);
                 double exp = new Double(c[3]);
                 Date date = new SimpleDateFormat("dd/MM/yyyy").parse(c[2]);
-                Employee employee = new Employee(c[0], c[1], date, exp);
+                EmployeeDTO employee = new EmployeeDTO(c[0], c[1], date, exp);
                 System.out.println("CSV");
-                kafkaTemplate.send(Topic,employee.toString());
+                ObjectMapper objectMapper = new ObjectMapper();
+                kafkaTemplate.send(Topic,objectMapper.writeValueAsString(employee));
 
             }
         } catch (FileNotFoundException e) {
